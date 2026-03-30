@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Global Fotos — Artisan Photography Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<style>
+  :root {
+    --bg:    #07090f;
+    --bg2:   #0d1018;
+    --bg3:   #111520;
+    --gold:  #d4922a;
+    --gold2: #f0b84a;
+    --teal:  #1a8fa0;
+    --teal2: #22b8ce;
+    --cream: #f2ede4;
+    --text:  #cdd0d8;
+    --muted: #5a6070;
+    --border: rgba(212,146,42,0.18);
+    --border2: rgba(26,143,160,0.18);
+    --r: 2px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  #cursor {
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform .1s, width .3s, height .3s, background .3s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform .18s ease, width .3s, height .3s, opacity .3s;
+    opacity: .5;
+  }
+  body:hover #cursor-ring { opacity: 1; }
+
+  /* Loader */
+  #loader {
+    position: fixed; inset: 0; background: #000; z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+    transition: opacity .7s ease, visibility .7s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo-img {
+    height: clamp(60px, 14vw, 100px);
+    width: auto;
+    filter: brightness(1.1);
+    animation: fadeIn 1s ease forwards;
+  }
+  .loader-tagline {
+    font-family: 'Manrope', sans-serif;
+    font-size: clamp(.7rem, 2vw, .85rem);
+    color: var(--muted);
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    animation: fadeIn 1s ease .3s both;
+  }
+  .loader-bar {
+    width: 200px; height: 1px;
+    background: var(--border);
+    position: relative; overflow: hidden;
+  }
+  .loader-bar::after {
+    content:''; position:absolute; left:-100%; top:0;
+    width:100%; height:100%;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    animation: barSlide 1.5s ease forwards;
+  }
+  @keyframes barSlide { to { left: 100%; } }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    padding: 24px 5vw;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background .5s, padding .5s, backdrop-filter .5s;
+  }
+  nav.scrolled {
+    background: rgba(8,8,8,.92);
+    backdrop-filter: blur(20px);
+    padding: 14px 5vw;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center;
+    text-decoration: none;
+    height: 44px;
+  }
+  .logo-img {
+    height: 38px; width: auto;
+    transition: opacity .4s;
+    display: block;
+  }
+  /* show light logo by default (on dark/transparent nav), dark logo when scrolled if needed */
+  .logo-light { display: block; }
+  .logo-dark  { display: none; }
+  /* AOS Sleek Overrides */
+  [data-aos] .aos-init {
+    transition-duration: 0.8s;
+  }
+  .nav-links {
+    display: flex; gap: 40px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--text); text-decoration: none;
+    font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+    transition: color .3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content:''; position:absolute; bottom:-4px; left:0;
+    width:0; height:1px; background: var(--gold);
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+.nav-cta {
+    padding: 10px 28px;
+    border: 1px solid var(--gold);
+    border-radius: var(--r);
+    color: var(--gold); text-decoration: none;
+    font-size: .78rem; letter-spacing: .2em;
+    text-transform: uppercase;
+    transition: all .3s;
+    background: transparent;
+  }
+  .nav-cta:hover { background: var(--gold); color: #000; }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 1px;
+    background: var(--gold); transition: all .3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px,4px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
+
+  /* Mobile nav */
+  .mobile-nav {
+    position: fixed; inset: 0; background: rgba(0,0,0,.97);
+    z-index: 999; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 40px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s;
+  }
+  .mobile-nav.open { opacity: 1; pointer-events: all; }
+  .mobile-nav a {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--cream); text-decoration: none;
+    letter-spacing: .1em; font-style: italic;
+    transition: color .3s;
+  }
+  .mobile-nav a:hover { color: var(--gold); }
+
+  /* HERO */
+  #hero {
+    height: 100vh; min-height: 600px;
+    position: relative; display: flex;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1800&q=80') center/cover no-repeat;
+    transform: scale(1.08);
+    animation: heroZoom 12s ease-in-out infinite alternate;
+    filter: brightness(.45);
+  }
+  @keyframes heroZoom {
+    from { transform: scale(1.08); }
+    to { transform: scale(1.14); }
+  }
+  .hero-grain {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+    opacity: .4; pointer-events: none;
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.5) 60%, rgba(8,8,8,1) 100%);
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; padding: 0 24px;
+    max-width: 900px;
+    animation: heroFade 1.4s ease .5s both;
+  }
+  @keyframes heroFade {
+    from { opacity:0; transform: translateY(30px); }
+    to { opacity:1; transform: none; }
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: .72rem; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 20px;
+  }
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.1rem, 8.5vw, 7rem);
+    font-weight: 300; line-height: .95;
+    color: var(--cream); margin-bottom: 28px;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-sub {
+    font-size: clamp(.85rem, 2vw, 1rem);
+    color: rgba(212,207,200,.7); max-width: 500px;
+    margin: 0 auto 44px; line-height: 1.8; letter-spacing: .04em;
+  }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+    padding: 16px 44px;
+    background: var(--gold);
+    border-radius: var(--r);
+    color: #000; text-decoration: none;
+    font-size: .8rem; letter-spacing: .25em; text-transform: uppercase;
+    font-weight: 500; transition: all .35s;
+    position: relative; overflow: hidden;
+  }
+  .btn-primary::before {
+    content:''; position:absolute; inset:0;
+    background: var(--gold2); transform: translateX(-101%);
+    transition: transform .35s;
+  }
+  .btn-primary:hover::before { transform: none; }
+  .btn-primary span { position: relative; z-index: 1; }
+.btn-ghost {
+    padding: 16px 44px;
+    border: 1px solid rgba(212,207,200,.3);
+    border-radius: var(--r);
+    color: var(--cream); text-decoration: none;
+    font-size: .8rem; letter-spacing: .25em; text-transform: uppercase;
+    transition: all .35s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-scroll {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    font-size: .68rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--muted); z-index: 2;
+    animation: bounce 2s ease infinite;
+  }
+  .hero-scroll::after {
+    content:''; width:1px; height:60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+  }
+  .stat-item {
+    padding: 40px 20px;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-size: .72rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* SECTION COMMON */
+  section { padding: clamp(60px, 10vw, 120px) 5vw; }
+  .section-eyebrow {
+    font-size: .72rem; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--gold); display: flex; align-items: center; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .section-eyebrow::before {
+    content:''; width: 40px; height: 1px; background: var(--gold);
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 300; color: var(--cream);
+    line-height: 1.1; margin-bottom: 20px;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  /* ABOUT */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: center;
+  }
+  .about-images {
+    position: relative; height: clamp(400px, 60vw, 620px);
+  }
+  .about-img-1 {
+    position: absolute; top: 0; left: 0;
+    width: 65%; height: 78%;
+    overflow: hidden;
+  }
+  .about-img-2 {
+    position: absolute; bottom: 0; right: 0;
+    width: 55%; height: 60%;
+    overflow: hidden;
+    border: 6px solid var(--bg);
+  }
+  .about-images img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s ease;
+  }
+  .about-images:hover img { transform: scale(1.06); }
+  .about-badge {
+    position: absolute; bottom: 90px; left: -10px;
+    background: var(--gold); color: #000;
+    padding: 20px 24px; text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    z-index: 2;
+  }
+  .about-badge strong {
+    display: block; font-size: 2.4rem; line-height: 1;
+  }
+  .about-badge span { font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; }
+  .about-text p {
+    color: rgba(212,207,200,.7); line-height: 1.9;
+    margin-bottom: 20px; font-size: .95rem;
+  }
+  .about-list {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin: 32px 0; list-style: none;
+  }
+  .about-list li {
+    font-size: .82rem; color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: .05em;
+  }
+  .about-list li::before {
+    content:''; width: 20px; height: 1px; background: var(--gold); flex-shrink: 0;
+  }
+
+  /* SERVICES */
+  #services { background: var(--bg2); }
+  .services-header { max-width: 600px; margin-bottom: 60px; }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+  }
+  .service-card {
+    position: relative; overflow: hidden;
+    aspect-ratio: 3/4; max-height: 500px;
+    cursor: none;
+  }
+  .service-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .7s ease;
+    filter: brightness(.55);
+  }
+  .service-card:hover img {
+    transform: scale(1.08); filter: brightness(.35);
+  }
+  .service-card-content {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 36px 28px;
+    background: linear-gradient(to top, rgba(0,0,0,.8) 0%, transparent 60%);
+    transition: background .4s;
+  }
+  .service-card:hover .service-card-content {
+    background: linear-gradient(to top, rgba(0,0,0,.95) 30%, rgba(0,0,0,.4) 100%);
+  }
+  .service-icon {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px; color: var(--gold);
+    transform: translateY(20px); opacity: 0;
+    transition: all .4s;
+  }
+  .service-card:hover .service-icon { transform: none; opacity: 1; }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; color: var(--cream); margin-bottom: 10px;
+  }
+  .service-desc {
+    font-size: .82rem; color: rgba(212,207,200,.65);
+    line-height: 1.7; max-height: 0; overflow: hidden;
+    transition: max-height .5s ease;
+  }
+  .service-card:hover .service-desc { max-height: 120px; }
+  .service-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--gold); font-size: .75rem; letter-spacing: .2em;
+    text-transform: uppercase; text-decoration: none; margin-top: 16px;
+    opacity: 0; transform: translateY(8px);
+    transition: all .4s .1s;
+  }
+  .service-card:hover .service-link { opacity: 1; transform: none; }
+  .service-link::after { content: '→'; }
+
+  /* PROCESS */
+  #process {
+    text-align: center;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%);
+  }
+  .process-header { max-width: 600px; margin: 0 auto 80px; }
+  .process-steps {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    position: relative; gap: 0;
+  }
+  .process-steps::before {
+    content:''; position:absolute; top: 30px; left: 12.5%; right: 12.5%;
+    height: 1px; background: var(--border); z-index: 0;
+  }
+  .process-step { padding: 0 20px; position: relative; z-index: 1; }
+  .step-num {
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 1px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; color: var(--gold);
+    background: var(--bg2);
+    transition: all .4s;
+  }
+  .process-step:hover .step-num { background: var(--gold); color: #000; }
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--cream); margin-bottom: 12px;
+  }
+  .step-desc { font-size: .8rem; color: var(--muted); line-height: 1.8; }
+
+  /* GALLERY */
+  #gallery { background: var(--bg); }
+  .gallery-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-bottom: 40px; flex-wrap: wrap; gap: 24px;
+  }
+  .gallery-filters {
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+.filter-btn {
+    padding: 8px 22px; background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    color: var(--muted); font-size: .75rem;
+    letter-spacing: .15em; text-transform: uppercase;
+    cursor: none; transition: all .3s;
+    font-family: 'Manrope', sans-serif;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,.07);
+  }
+  .masonry-grid {
+    columns: 3; column-gap: 4px;
+  }
+  .masonry-item {
+    break-inside: avoid; margin-bottom: 4px;
+    position: relative; overflow: hidden; cursor: none;
+  }
+  .masonry-item img {
+    display: block; width: 100%;
+    transition: transform .6s ease, filter .4s;
+    filter: brightness(.85);
+  }
+  .masonry-item:hover img { transform: scale(1.06); filter: brightness(.5); }
+  .masonry-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+    opacity: 0; transition: opacity .4s;
+  }
+  .masonry-item:hover .masonry-overlay { opacity: 1; }
+  .masonry-overlay span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: var(--cream); font-style: italic;
+  }
+
+  /* LIGHTBOX */
+  #lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,.97);
+    z-index: 9000; display: none; align-items: center; justify-content: center;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img { max-width: 90vw; max-height: 85vh; object-fit: contain; }
+  .lightbox-close {
+    position: absolute; top: 24px; right: 30px;
+    color: var(--cream); font-size: 2rem; cursor: none;
+    background: none; border: none; line-height: 1;
+  }
+  .lightbox-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    color: var(--cream); font-size: 2rem;
+    background: none; border: none; cursor: none;
+    padding: 20px; opacity: .6; transition: opacity .3s;
+  }
+  .lightbox-arrow:hover { opacity: 1; }
+  .lightbox-prev { left: 10px; }
+  .lightbox-next { right: 10px; }
+
+  /* TESTIMONIALS */
+  #testimonials {
+    background: var(--bg2);
+    overflow: hidden;
+  }
+  .testimonials-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .testimonials-header { margin-bottom: 60px; }
+  .testimonial-slider { position: relative; }
+  .testimonial-slide {
+    display: none; animation: fadeSlide .5s ease;
+  }
+  .testimonial-slide.active { display: block; }
+  @keyframes fadeSlide { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+  .testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-style: italic; color: var(--cream);
+    line-height: 1.6; margin-bottom: 40px;
+    position: relative;
+  }
+  .testimonial-quote::before {
+    content: '"';
+    font-size: 8rem; color: var(--gold); opacity: .15;
+    position: absolute; top: -40px; left: -20px;
+    font-family: 'Cormorant Garamond', serif;
+    line-height: 1;
+  }
+  .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .testimonial-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--gold);
+  }
+  .testimonial-info { text-align: left; }
+  .testimonial-name { font-weight: 500; color: var(--cream); margin-bottom: 4px; }
+  .testimonial-role { font-size: .78rem; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; }
+  .testimonial-stars { color: var(--gold); font-size: .9rem; margin-bottom: 6px; }
+  .slider-dots { display: flex; gap: 8px; justify-content: center; margin-top: 44px; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border); border: none;
+    cursor: none; transition: all .3s;
+  }
+  .dot.active { background: var(--gold); width: 24px; border-radius: 3px; }
+  .slider-nav { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+.slider-btn {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border); background: none;
+    border-radius: var(--r);
+    color: var(--text); cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: all .3s;
+  }
+  .slider-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* CTA SECTION */
+  #cta {
+    position: relative; overflow: hidden;
+    text-align: center; padding: clamp(80px, 12vw, 160px) 5vw;
+  }
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1800&q=80') center/cover;
+    filter: brightness(.25);
+  }
+  .cta-content {
+    position: relative; z-index: 1;
+    max-width: 700px; margin: 0 auto;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--cream); line-height: 1.1;
+    margin-bottom: 24px; font-weight: 300;
+  }
+  .cta-title em { font-style: italic; color: var(--gold); }
+  .cta-sub {
+    color: rgba(212,207,200,.65);
+    line-height: 1.8; margin-bottom: 48px; font-size: .95rem;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--bg); }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 100px); align-items: start;
+  }
+  .contact-info h2 { margin-bottom: 20px; }
+  .contact-info p {
+    color: rgba(212,207,200,.65); line-height: 1.8; margin-bottom: 48px;
+  }
+  .contact-detail {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .contact-icon {
+    width: 44px; height: 44px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); flex-shrink: 0;
+  }
+  .contact-detail-text { font-size: .85rem; }
+  .contact-detail-text strong { display: block; color: var(--cream); margin-bottom: 4px; letter-spacing: .05em; }
+  .contact-detail-text a { color: var(--muted); text-decoration: none; transition: color .3s; }
+  .contact-detail-text a:hover { color: var(--gold); }
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group label {
+    font-size: .72rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--text); padding: 14px 18px;
+    font-family: 'Manrope', sans-serif; font-size: .9rem;
+    outline: none; transition: border-color .3s;
+    resize: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group select option { background: var(--bg2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .whatsapp-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px; background: #25D366;
+    color: #fff; text-decoration: none;
+    font-size: .8rem; letter-spacing: .15em; text-transform: uppercase;
+    transition: opacity .3s; margin-top: 8px;
+  }
+  .whatsapp-link:hover { opacity: .85; }
+
+  /* FOOTER */
+  footer {
+    background: #000;
+    border-top: 1px solid var(--border);
+    padding: 60px 5vw 30px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; margin-bottom: 60px;
+  }
+  .footer-logo-img {
+    height: 52px; width: auto;
+    margin-bottom: 18px;
+    filter: brightness(1.05);
+    display: block;
+  }
+  .footer-brand-desc {
+    font-size: .82rem; color: var(--muted); line-height: 1.9;
+    margin-bottom: 28px;
+  }
+  .social-links { display: flex; gap: 10px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); text-decoration: none; font-size: .9rem;
+    transition: all .3s;
+  }
+  .social-link:hover { border-color: var(--gold); color: var(--gold); }
+  .footer-col h4 {
+    font-size: .72rem; letter-spacing: .25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 24px;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-links a {
+    color: var(--muted); text-decoration: none; font-size: .83rem;
+    transition: color .3s; display: flex; align-items: center; gap: 8px;
+  }
+  .footer-links a::before { content:''; width:12px; height:1px; background:var(--border); flex-shrink:0; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-links a:hover::before { background: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 30px; display: flex;
+    justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: .75rem; color: var(--muted); letter-spacing: .1em;
+  }
+  .footer-bottom a { color: var(--gold); text-decoration: none; }
+
+  /* FLOATING BUTTONS */
+  .float-buttons {
+    position: fixed; right: 24px; bottom: 100px;
+    display: flex; flex-direction: column; gap: 12px; z-index: 500;
+  }
+  .float-wa {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: #25D366; display: flex;
+    align-items: center; justify-content: center;
+    text-decoration: none; color: #fff; font-size: 1.4rem;
+    box-shadow: 0 4px 24px rgba(37,211,102,.4);
+    transition: transform .3s, box-shadow .3s;
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse {
+    0%,100%{box-shadow:0 4px 24px rgba(37,211,102,.4)}
+    50%{box-shadow:0 4px 40px rgba(37,211,102,.7)}
+  }
+  .float-wa:hover { transform: scale(1.12); }
+  #scrollTop {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border);
+    background: var(--bg2); color: var(--gold);
+    display: none; align-items: center; justify-content: center;
+    cursor: none; font-size: 1.1rem;
+    transition: all .3s;
+  }
+  #scrollTop.visible { display: flex; }
+  #scrollTop:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+
+  /* SCROLL ANIMATIONS */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-left {
+    opacity: 0; transform: translateX(-40px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal-left.visible { opacity: 1; transform: none; }
+  .reveal-right {
+    opacity: 0; transform: translateX(40px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .reveal-right.visible { opacity: 1; transform: none; }
+
+  /* STAGGER */
+  .stagger > * { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+  .stagger.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:.0s}
+  .stagger.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:.1s}
+  .stagger.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:.2s}
+  .stagger.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:.3s}
+  .stagger.visible > *:nth-child(5){opacity:1;transform:none;transition-delay:.4s}
+
+  /* TEAL ACCENTS — logo complementary colour */
+  .hero-eyebrow {
+    border-top-color: rgba(26,143,160,.4);
+    border-bottom-color: rgba(26,143,160,.4);
+    color: var(--teal2);
+  }
+  .stat-num { color: var(--gold); }
+  .stat-item:nth-child(2) .stat-num { color: var(--teal2); }
+  .stat-item:nth-child(4) .stat-num { color: var(--teal2); }
+  .about-badge { background: var(--gold); }
+  .service-icon { color: var(--teal2); border-color: rgba(26,143,160,.3); }
+  .service-card:nth-child(2) .service-icon,
+  .service-card:nth-child(4) .service-icon { color: var(--gold); border-color: var(--border); }
+  .step-num { border-color: var(--teal); color: var(--teal2); }
+  .process-step:hover .step-num { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .section-eyebrow::before { background: linear-gradient(90deg, var(--teal), var(--gold)); }
+  .hero-scroll::after { background: linear-gradient(to bottom, var(--teal2), transparent); }
+  /* Teal underline on active nav */
+  .nav-links a.active { color: var(--teal2); }
+  .nav-links a.active::after { width: 100%; background: var(--teal2); }
+
+  /* Loader dark bg with subtle glow */
+  #loader {
+    background: radial-gradient(ellipse at center, #0d1825 0%, #000 70%);
+  }
+
+  /* Loader bar teal-gold gradient */
+  .loader-bar::after {
+    background: linear-gradient(90deg, transparent, var(--teal2), var(--gold), transparent);
+  }
+
+  /* Input focus teal */
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(26,143,160,.1);
+  }
+
+  /* Contact icon teal */
+  .contact-icon { color: var(--teal2); border-color: rgba(26,143,160,.25); }
+  .contact-detail-text a:hover { color: var(--teal2); }
+
+  /* Footer col h4 teal */
+  .footer-col h4 { color: var(--teal2); }
+  .footer-links a:hover { color: var(--teal2); }
+  .footer-links a:hover::before { background: var(--teal2); }
+
+  /* Social hover alternate teal */
+  .social-link:nth-child(2):hover,
+  .social-link:nth-child(4):hover { border-color: var(--teal2); color: var(--teal2); }
+
+  /* Footer bottom link */
+  .footer-bottom a { color: var(--teal2); }
+
+  /* CTA button second style: teal ghost */
+  .btn-ghost:hover { border-color: var(--teal2); color: var(--teal2); }
+
+  /* Slider btn teal hover */
+  .slider-btn:hover { border-color: var(--teal2); color: var(--teal2); }
+
+  /* Dot active teal */
+  .dot.active { background: var(--teal2); }
+
+  /* Process connector line teal */
+  .process-steps::before {
+    background: linear-gradient(90deg, var(--teal), var(--gold));
+  }
+
+  /* nav-cta teal border on scrolled state */
+  nav.scrolled .nav-cta {
+    border-color: var(--teal);
+    color: var(--teal2);
+  }
+  nav.scrolled .nav-cta:hover {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+  }
+
+  /* Masonry overlay teal accent */
+  .masonry-overlay {
+    background: linear-gradient(to top, rgba(13,16,24,.85), rgba(26,143,160,.08));
+  }
+
+  /* Mobile nav logo at top */
+  .mobile-nav-logo {
+    position: absolute; top: 28px; left: 50%;
+    transform: translateX(-50%);
+    height: 44px; width: auto;
+  }
+
+  /* Hero title gold italic stronger */
+  .hero-title em {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Section title em gradient */
+  .section-title em {
+    background: linear-gradient(135deg, var(--gold), var(--teal2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Stats strip bg updated */
+  .stats-strip {
+    background: linear-gradient(135deg, #0a0d14, #0d1018);
+  }
+
+  /* About badge with teal top border */
+  .about-badge {
+    border-top: 3px solid var(--teal);
+  }
+
+  /* Scrolltop teal hover */
+  #scrollTop:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+  /* Hero overlay bottom teal-navy tint */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0,0,0,.05) 0%,
+      rgba(7,9,15,.5) 60%,
+      rgba(7,9,15,1) 100%
+    );
+  }
+
+  /* Service link gold */
+  .service-link { color: var(--gold2); }
+  .service-card:nth-child(2) .service-link,
+  .service-card:nth-child(4) .service-link { color: var(--teal2); }
+
+  /* Testimonial quote gold mark */
+  .testimonial-quote::before { color: var(--gold); }
+
+  /* Testimonial avatar border teal */
+  .testimonial-avatar { border-color: var(--teal); }
+
+  /* Filter btn active teal */
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal2);
+    background: rgba(26,143,160,.08);
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:1024px){
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .process-steps::before { display: none; }
+    .process-step { margin-bottom: 40px; }
+  }
+  @media(max-width:768px){
+    .nav-links, .nav-cta { display: none; }
+    .hamburger { display: flex; }
+    #about { grid-template-columns: 1fr; }
+    .about-images { height: 400px; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .masonry-grid { columns: 2; }
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3) { border-top: 1px solid var(--border); }
+    .footer-grid { grid-template-columns: 1fr; gap: 36px; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .about-badge { left: 0; bottom: 70px; }
+    .hero-btns { flex-direction: column; align-items: center; }
+  }
+  @media(max-width:480px){
+    .masonry-grid { columns: 1; }
+    .stats-strip { grid-template-columns: 1fr 1fr; }
+    .process-steps { grid-template-columns: 1fr; }
+    body { cursor: auto; }
+    #cursor, #cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <img src="./logo-1.png" alt="Global Fotos" class="loader-logo-img" style="border-radius: 5px;"/>
+  <div class="loader-tagline">Capturing Moments Artfully</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Navigation -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="./logo-1.png" alt="Global Fotos" class="logo-img logo-light" style="border-radius: 3px;"/>
+    <img src="./logo-1.png" alt="Global Fotos" class="logo-img logo-dark" style="border-radius: 3px;"/>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book Session</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <img src="https://globalfotos.in/assets/img/logo-1.png" alt="Global Fotos" class="mobile-nav-logo"/>
+  <a href="#about" class="mob-link">About</a>
+  <a href="#services" class="mob-link">Services</a>
+  <a href="#gallery" class="mob-link">Gallery</a>
+  <a href="#testimonials" class="mob-link">Stories</a>
+  <a href="#contact" class="mob-link">Contact</a>
+  <a href="#contact" class="btn-primary"><span>Book a Session</span></a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Est. 1992 · Chengalpet, Tamil Nadu</div>
+    <h1 class="hero-title">
+      Where <em>Moments</em><br>Become<br>Masterpieces
+    </h1>
+    <p class="hero-sub">
+      We don't just photograph life — we craft visual poetry from your most treasured moments. Every frame, an emotion. Every click, a legacy.
+    </p>
+    <div class="hero-btns">
+      <a href="#gallery" class="btn-primary"><span>Explore Our Work</span></a>
+      <a href="#contact" class="btn-ghost">Book a Session</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip stagger">
+  <div class="stat-item">
+    <div class="stat-num">5K+</div>
+    <div class="stat-label">Memories Captured</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">32</div>
+    <div class="stat-label">Years of Excellence</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">98%</div>
+    <div class="stat-label">Client Satisfaction</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">12</div>
+    <div class="stat-label">Industry Awards</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-images reveal-left">
+    <div class="about-img-1">
+      <img src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=800&q=80" alt="Wedding Photography"/>
+    </div>
+    <div class="about-img-2">
+      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&q=80" alt="Portrait Photography"/>
+    </div>
+    <div class="about-badge">
+      <strong>32</strong>
+      <span>Years of Artistry</span>
+    </div>
+  </div>
+  <div class="about-text reveal-right">
+    <div class="section-eyebrow">Our Story</div>
+    <h2 class="section-title">Crafting <em>Visual Legacies</em> Since 1992</h2>
+    <p>
+      Born from a deep passion for visual storytelling, Global Fotos has been Tamil Nadu's premier photography studio for over three decades. We were among the first generation of professionals to master the art of visual communication in the region.
+    </p>
+    <p>
+      Our philosophy is simple: every moment holds a universe of emotion. Our lens is the instrument that preserves those universes — wedding ceremonies, baby's first smiles, maternity glow, outdoor adventures — each story told with uncompromising artistry.
+    </p>
+    <ul class="about-list">
+      <li>Award-winning team</li>
+      <li>State-of-the-art studio</li>
+      <li>Premium editing suite</li>
+      <li>Same-day previews</li>
+      <li>Physical & digital delivery</li>
+      <li>Custom print packages</li>
+    </ul>
+    <a href="#contact" class="btn-primary"><span>Begin Your Journey</span></a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <div class="section-eyebrow">What We Do</div>
+    <h2 class="section-title">Artistry Across <em>Every Occasion</em></h2>
+  </div>
+  <div class="services-grid stagger">
+    <div class="service-card">
+      <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80" alt="Wedding Photography"/>
+      <div class="service-card-content">
+        <div class="service-icon">♥</div>
+        <div class="service-name">Wedding Photography</div>
+        <div class="service-desc">Unscripted moments, timeless frames. We capture the raw emotion of your wedding day — from quiet glances to grand celebrations.</div>
+        <a href="#contact" class="service-link">Enquire Now</a>
+      </div>
+    </div>
+    <div class="service-card">
+      <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=800&q=80" alt="Baby Shoot"/>
+      <div class="service-card-content">
+        <div class="service-icon">★</div>
+        <div class="service-name">Baby Photoshoot</div>
+        <div class="service-desc">Tiny fingers, curious eyes, and that unmistakable newborn magic. Professionally documented for a lifetime of cherishing.</div>
+        <a href="#contact" class="service-link">Enquire Now</a>
+      </div>
+    </div>
+    <div class="service-card">
+      <img src="https://images.unsplash.com/photo-1531983412531-1f49a365ffed?w=800&q=80" alt="Maternity Shoot"/>
+      <div class="service-card-content">
+        <div class="service-icon">◎</div>
+        <div class="service-name">Maternity Shoot</div>
+        <div class="service-desc">The most radiant chapter of life. We celebrate the beauty of motherhood with elegance, warmth, and artistic vision.</div>
+        <a href="#contact" class="service-link">Enquire Now</a>
+      </div>
+    </div>
+    <div class="service-card">
+      <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" alt="Events"/>
+      <div class="service-card-content">
+        <div class="service-icon">✦</div>
+        <div class="service-name">Events & Occasions</div>
+        <div class="service-desc">Corporate galas, birthday milestones, festive ceremonies — every occasion deserves documentation that does justice to its grandeur.</div>
+        <a href="#contact" class="service-link">Enquire Now</a>
+      </div>
+    </div>
+    <div class="service-card">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Outdoor Shoot"/>
+      <div class="service-card-content">
+        <div class="service-icon">◇</div>
+        <div class="service-name">Outdoor Photoshoot</div>
+        <div class="service-desc">Nature as your canvas. Whether sunrise cliffs or monsoon forests, we use the world's beauty to frame yours.</div>
+        <a href="#contact" class="service-link">Enquire Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="process-header reveal">
+    <div class="section-eyebrow" style="justify-content:center">How It Works</div>
+    <h2 class="section-title">Your Experience,<br><em>Crafted Carefully</em></h2>
+  </div>
+  <div class="process-steps stagger">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Consultation</div>
+      <div class="step-desc">We begin with a detailed conversation to understand your vision, style preferences, and the story you want told.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Booking</div>
+      <div class="step-desc">Select your package, confirm your date, and secure your session with our simple booking process.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-title">The Shoot</div>
+      <div class="step-desc">Our team arrives fully prepared to capture every emotion, laugh, and quiet intimate moment with artistic precision.</div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Delivery</div>
+      <div class="step-desc">Meticulously edited images delivered digitally, with optional premium prints, frames, and albums.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header">
+    <div class="reveal">
+      <div class="section-eyebrow">Our Portfolio</div>
+      <h2 class="section-title">A Glimpse of <em>Our World</em></h2>
+    </div>
+    <div class="gallery-filters reveal">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="wedding">Wedding</button>
+      <button class="filter-btn" data-filter="baby">Baby & Family</button>
+      <button class="filter-btn" data-filter="events">Events</button>
+      <button class="filter-btn" data-filter="outdoor">Outdoor</button>
+    </div>
+  </div>
+  <div class="masonry-grid" id="masonryGrid">
+    <div class="masonry-item" data-cat="wedding">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Wedding"/>
+      <div class="masonry-overlay"><span>Wedding Ceremony</span></div>
+    </div>
+    <div class="masonry-item" data-cat="baby">
+      <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&q=80" alt="Baby"/>
+      <div class="masonry-overlay"><span>Newborn Magic</span></div>
+    </div>
+    <div class="masonry-item" data-cat="outdoor">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Outdoor"/>
+      <div class="masonry-overlay"><span>Outdoor Session</span></div>
+    </div>
+    <div class="masonry-item" data-cat="wedding">
+      <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80" alt="Wedding"/>
+      <div class="masonry-overlay"><span>Wedding Reception</span></div>
+    </div>
+    <div class="masonry-item" data-cat="baby">
+      <img src="https://images.unsplash.com/photo-1468817814611-b7edf94b5d60?w=600&q=80" alt="Family"/>
+      <div class="masonry-overlay"><span>Family Portrait</span></div>
+    </div>
+    <div class="masonry-item" data-cat="events">
+      <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80" alt="Event"/>
+      <div class="masonry-overlay"><span>Celebration</span></div>
+    </div>
+    <div class="masonry-item" data-cat="wedding">
+      <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Wedding"/>
+      <div class="masonry-overlay"><span>Bridal Portrait</span></div>
+    </div>
+    <div class="masonry-item" data-cat="outdoor">
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" alt="Outdoor"/>
+      <div class="masonry-overlay"><span>Nature Portrait</span></div>
+    </div>
+    <div class="masonry-item" data-cat="baby">
+      <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=600&q=80" alt="Baby"/>
+      <div class="masonry-overlay"><span>Tender Moments</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="lightbox-close" id="lbClose">✕</button>
+  <button class="lightbox-arrow lightbox-prev" id="lbPrev">‹</button>
+  <img id="lbImg" src="" alt=""/>
+  <button class="lightbox-arrow lightbox-next" id="lbNext">›</button>
+</div>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testimonials-inner">
+    <div class="testimonials-header reveal">
+      <div class="section-eyebrow" style="justify-content:center">Client Stories</div>
+      <h2 class="section-title" style="text-align:center">Words From <em>Our Family</em></h2>
+    </div>
+    <div class="testimonial-slider">
+      <div class="testimonial-slide active">
+        <div class="testimonial-quote">
+          Global Fotos didn't just photograph our wedding — they sculpted an entire emotional journey. Every image feels like a painting we'll pass down through generations.
+        </div>
+        <div class="testimonial-author">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Saravanan"/>
+          <div class="testimonial-info">
+            <div class="testimonial-stars">★★★★★</div>
+            <div class="testimonial-name">Saravanan K.</div>
+            <div class="testimonial-role">Wedding Client</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-slide">
+        <div class="testimonial-quote">
+          Our newborn's first photos are absolute treasures. The team made our baby feel completely comfortable, and the patience they showed was extraordinary.
+        </div>
+        <div class="testimonial-author">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="Priya"/>
+          <div class="testimonial-info">
+            <div class="testimonial-stars">★★★★★</div>
+            <div class="testimonial-name">Priya & Vijay</div>
+            <div class="testimonial-role">Baby Photoshoot</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-slide">
+        <div class="testimonial-quote">
+          My maternity shoot with Global Fotos was a transformative experience. They made me feel like a goddess, and the images are breathtakingly beautiful.
+        </div>
+        <div class="testimonial-author">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80" alt="Deepa"/>
+          <div class="testimonial-info">
+            <div class="testimonial-stars">★★★★★</div>
+            <div class="testimonial-name">Deepa Raj</div>
+            <div class="testimonial-role">Maternity Session</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-slide">
+        <div class="testimonial-quote">
+          For our corporate annual gala, Global Fotos delivered professional, creative event photography that perfectly captured the spirit of the evening.
+        </div>
+        <div class="testimonial-author">
+          <img class="testimonial-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="Aravind"/>
+          <div class="testimonial-info">
+            <div class="testimonial-stars">★★★★★</div>
+            <div class="testimonial-name">Aravind Raj</div>
+            <div class="testimonial-role">Corporate Event</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slider-dots" id="sliderDots"></div>
+    <div class="slider-nav">
+      <button class="slider-btn" id="prevBtn">←</button>
+      <button class="slider-btn" id="nextBtn">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-content reveal">
+    <div class="section-eyebrow" style="justify-content:center">Your Story Awaits</div>
+    <h2 class="cta-title">Ready to Create <em>Something</em> Extraordinary?</h2>
+    <p class="cta-sub">
+      Every great photograph begins with a conversation. Let's talk about your vision, your story, and how we can bring it to life with our lens.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary"><span>Book Your Session</span></a>
+      <a href="https://wa.me/917418234485" target="_blank" class="btn-ghost">WhatsApp Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal-left">
+      <div class="section-eyebrow">Get In Touch</div>
+      <h2 class="section-title">Let's <em>Create</em> Together</h2>
+      <p>
+        Whether you're planning a wedding, celebrating a new arrival, or want to capture a cherished chapter of life — we'd love to hear from you. Reach out and let's begin.
+      </p>
+      <div class="contact-detail">
+        <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=PZTTDl8ML4vy&format=png&color=000000" style="width: 20px;"></div>
+        <div class="contact-detail-text">
+          <strong>Studio Address</strong>
+          <a>25A, Devodass Street, V.Nagar, Chengalpet — 603001</a>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=5wGnhtHODuE9&format=png&color=000000" style="width: 20px;"></div>
+        <div class="contact-detail-text">
+          <strong>Call or WhatsApp</strong>
+          <a href="tel:7418234485">+91 74182 34485</a>
+        </div>
+      </div>
+      <div class="contact-detail">
+        <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=xLIkjgcmFOsC&format=png&color=000000" style="width: 20px;"></div>
+        <div class="contact-detail-text">
+          <strong>Email Us</strong>
+          <a href="mailto:globalfotos@gmail.com">globalfotos@gmail.com</a>
+        </div>
+      </div>
+      <a href="https://wa.me/917418234485?text=Hi%2C%20I%20visited%20your%20website%20and%20I%27d%20like%20to%20enquire%20about%20a%20photography%20session." class="whatsapp-link" target="_blank" style="border: 1px solid white; border-radius:8px;">
+        <img src="https://img.icons8.com/?size=100&id=rXuALMaF4HW8&format=png&color=ffffff" style="width: 20px;"> Chat on WhatsApp
+      </a>
+    </div>
+    <div class="reveal-right">
+      <form class="contact-form" onsubmit="handleForm(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="Full Name" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" placeholder="+91 00000 00000" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="your@email.com"/>
+        </div>
+        <div class="form-group">
+          <label>Service Required</label>
+          <select>
+            <option value="">Select a Service</option>
+            <option>Wedding Photography</option>
+            <option>Wedding Videography</option>
+            <option>Baby Photoshoot</option>
+            <option>Maternity Shoot</option>
+            <option>Events Photography</option>
+            <option>Outdoor Photoshoot</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Event Date (if known)</label>
+          <input type="date"/>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea rows="4" placeholder="Tell us about your vision..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="border:none;cursor:none;font-family:'Manrope',sans-serif;">
+          <span>Send Enquiry →</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <img src="./logo-1.png" alt="Global Fotos" class="footer-logo-img" style="border-radius: 5px;"/>
+      <div class="footer-brand-desc">
+        Tamil Nadu's premier photography studio since 1992. Capturing life's most precious moments with artistry, passion, and an unwavering commitment to excellence.
+      </div>
+      <div class="social-links">
+        <a href="#" class="social-link" aria-label="Facebook"><img src="https://img.icons8.com/?size=100&id=uLWV5A9vXIPu&format=png&color=000000" style="width: 10px;"></a>
+        <a href="#" class="social-link" aria-label="Instagram"><img src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png&color=000000" style="width: 10px;"></a>
+        <a href="https://www.youtube.com/@Sudhakarrajendiran" class="social-link" aria-label="WhatsApp"><img src="https://img.icons8.com/?size=100&id=19318&format=png&color=000000" style="width: 10px;"></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul class="footer-links">
+        <li><a href="#services">Wedding Photography</a></li>
+        <li><a href="#services">Baby Photoshoot</a></li>
+        <li><a href="#services">Maternity Shoot</a></li>
+        <li><a href="#services">Events</a></li>
+        <li><a href="#services">Outdoor Shoot</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul class="footer-links">
+        <li><a href="tel:7418234485">+91 74182 34485</a></li>
+        <li><a href="mailto:globalfotos@gmail.com">globalfotos@gmail.com</a></li>
+        <li><a>25A, Devodass Street,<br>V.Nagar, Chengalpet</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Global Fotos. All Rights Reserved.</span>
+    <span>Developed ♥ By Karisal Graphix</span>
+  </div>
+</footer>
+
+<!-- FLOATING BUTTONS -->
+<div class="float-buttons">
+  <a href="https://wa.me/917418234485" class="float-wa" target="_blank" title="WhatsApp"><img src="https://img.icons8.com/?size=100&id=rXuALMaF4HW8&format=png&color=ffffff" style="width: 40px;"></a>
+  <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">↑</button>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Loader
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 1800);
+});
+
+// Cursor
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  }, 80);
+});
+document.querySelectorAll('a,button,.service-card,.masonry-item').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.width = '20px'; cur.style.height = '20px';
+    ring.style.width = '60px'; ring.style.height = '60px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.width = '10px'; cur.style.height = '10px';
+    ring.style.width = '36px'; ring.style.height = '36px';
+  });
+});
+
+// Navbar scroll
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+});
+
+// Hamburger
+const ham = document.getElementById('hamburger');
+const mobNav = document.getElementById('mobileNav');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  mobNav.classList.toggle('open');
+  document.body.style.overflow = mobNav.classList.contains('open') ? 'hidden' : '';
+});
+document.querySelectorAll('.mob-link').forEach(a => {
+  a.addEventListener('click', () => {
+    ham.classList.remove('open');
+    mobNav.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger').forEach(el => observer.observe(el));
+
+// Gallery filters
+const filterBtns = document.querySelectorAll('.filter-btn');
+const items = document.querySelectorAll('.masonry-item');
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    items.forEach(item => {
+      const show = f === 'all' || item.dataset.cat === f;
+      item.style.display = show ? 'block' : 'none';
+    });
+  });
+});
+
+// Lightbox
+const lbImgs = Array.from(document.querySelectorAll('.masonry-item img'));
+let lbIdx = 0;
+const lightbox = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+
+function openLb(idx) {
+  lbIdx = idx;
+  lbImg.src = lbImgs[lbIdx].src;
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.masonry-item').forEach((item, i) => {
+  item.addEventListener('click', () => openLb(i));
+});
+document.getElementById('lbClose').addEventListener('click', closeLb);
+document.getElementById('lbPrev').addEventListener('click', () => {
+  lbIdx = (lbIdx - 1 + lbImgs.length) % lbImgs.length;
+  lbImg.src = lbImgs[lbIdx].src;
+});
+document.getElementById('lbNext').addEventListener('click', () => {
+  lbIdx = (lbIdx + 1) % lbImgs.length;
+  lbImg.src = lbImgs[lbIdx].src;
+});
+lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLb(); });
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeLb();
+  if(e.key === 'ArrowLeft') { lbIdx=(lbIdx-1+lbImgs.length)%lbImgs.length; lbImg.src=lbImgs[lbIdx].src; }
+  if(e.key === 'ArrowRight') { lbIdx=(lbIdx+1)%lbImgs.length; lbImg.src=lbImgs[lbIdx].src; }
+});
+
+// Testimonial slider
+const slides = document.querySelectorAll('.testimonial-slide');
+const dotsContainer = document.getElementById('sliderDots');
+let curSlide = 0;
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(dot);
+});
+function goTo(n) {
+  slides[curSlide].classList.remove('active');
+  document.querySelectorAll('.dot')[curSlide].classList.remove('active');
+  curSlide = (n + slides.length) % slides.length;
+  slides[curSlide].classList.add('active');
+  document.querySelectorAll('.dot')[curSlide].classList.add('active');
+}
+document.getElementById('prevBtn').addEventListener('click', () => goTo(curSlide - 1));
+document.getElementById('nextBtn').addEventListener('click', () => goTo(curSlide + 1));
+setInterval(() => goTo(curSlide + 1), 5000);
+
+// Smooth nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+// Active nav section highlight
+const navSections = document.querySelectorAll('section[id]');
+const navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+const navObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      navAnchors.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.35 });
+navSections.forEach(s => navObserver.observe(s));
+
+// Form submit
+function handleForm(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span>✓ Message Sent!</span>';
+  btn.style.background = '#1a8fa0';
+  btn.style.borderColor = '#1a8fa0';
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    e.target.reset();
+  }, 3500);
+}
+</script>
+</body>
+</html>
