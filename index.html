@@ -25,7 +25,7 @@
     --r: 2px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -33,6 +33,8 @@
     font-weight: 300;
     overflow-x: hidden;
     cursor: none;
+    margin: 0;
+    padding: 0;
   }
 
   /* Custom cursor */
@@ -120,9 +122,12 @@
   /* show light logo by default (on dark/transparent nav), dark logo when scrolled if needed */
   .logo-light { display: block; }
   .logo-dark  { display: none; }
-  /* AOS Sleek Overrides */
-  [data-aos] .aos-init {
-    transition-duration: 0.8s;
+  /* AOS Overrides */
+  [data-aos] {
+    transition-duration: 0.8s !important;
+  }
+  [data-aos][data-aos][data-aos-duration='800'] {
+    transition-duration: 800ms;
   }
   .nav-links {
     display: flex; gap: 40px; list-style: none;
@@ -716,7 +721,7 @@
 
   /* FLOATING BUTTONS */
   .float-buttons {
-    position: fixed; right: 24px; bottom: 100px;
+    position: fixed; right: clamp(12px, 3vw, 24px); bottom: 100px;
     display: flex; flex-direction: column; gap: 12px; z-index: 500;
   }
   .float-wa {
@@ -926,8 +931,9 @@
   @media(max-width:768px){
     .nav-links, .nav-cta { display: none; }
     .hamburger { display: flex; }
-    #about { grid-template-columns: 1fr; }
-    .about-images { height: 400px; }
+    #about { grid-template-columns: 1fr; gap: 40px; overflow: hidden; }
+    .about-images { height: 340px; }
+    .about-badge { left: 0; bottom: 60px; }
     .contact-grid { grid-template-columns: 1fr; }
     .masonry-grid { columns: 2; }
     .stats-strip { grid-template-columns: 1fr 1fr; }
@@ -936,8 +942,15 @@
     .footer-grid { grid-template-columns: 1fr; gap: 36px; }
     .process-steps { grid-template-columns: 1fr 1fr; }
     .form-row { grid-template-columns: 1fr; }
-    .about-badge { left: 0; bottom: 70px; }
     .hero-btns { flex-direction: column; align-items: center; }
+    .gallery-header { flex-direction: column; align-items: flex-start; }
+    .gallery-filters { gap: 6px; }
+    .filter-btn { padding: 7px 16px; font-size: .72rem; }
+    section { padding: clamp(48px, 8vw, 80px) clamp(16px, 5vw, 40px); }
+    .stat-item { padding: 28px 12px; }
+    .services-header { margin-bottom: 36px; }
+    .process-header { margin-bottom: 48px; }
+    .footer-bottom { flex-direction: column; text-align: center; gap: 10px; }
   }
   @media(max-width:480px){
     .masonry-grid { columns: 1; }
@@ -945,15 +958,17 @@
     .process-steps { grid-template-columns: 1fr; }
     body { cursor: auto; }
     #cursor, #cursor-ring { display: none; }
+    .about-images { height: 300px; }
+    .about-badge { padding: 14px 18px; left: 0; bottom: 50px; }
+    .about-badge strong { font-size: 1.8rem; }
+    .hero-btns a, .hero-btns .btn-ghost { width: 100%; max-width: 280px; text-align: center; }
+    .contact-detail { gap: 12px; }
+    .testimonial-quote { font-size: clamp(1.1rem, 4vw, 1.5rem); }
+    .section-title { font-size: clamp(1.8rem, 7vw, 2.6rem); }
+    .float-buttons { right: 12px; bottom: 80px; }
+    nav { padding: 16px clamp(16px, 5vw, 24px); }
+    .mobile-nav a { font-size: 1rem; }
   }
-
-    @media screen and (min-width:320px) and (max-width:768px){
-    .nav{
-        width:98% !important;
-    }
-    .mobile-nav{
-        font-size:20px !important;
-    }
 </style>
 </head>
 <body>
@@ -990,7 +1005,6 @@
 
 <!-- Mobile Nav -->
 <div class="mobile-nav" id="mobileNav">
-  <!-- <img src="https://globalfotos.in/assets/img/logo-1.png" alt="Global Fotos" class="mobile-nav-logo"/> -->
   <a href="#about" class="mob-link">About</a>
   <a href="#services" class="mob-link">Services</a>
   <a href="#gallery" class="mob-link">Gallery</a>
@@ -1022,19 +1036,19 @@
 
 <!-- STATS -->
 <div class="stats-strip stagger">
-  <div class="stat-item">
+  <div class="stat-item" data-aos="fade-up" data-aos-delay="0">
     <div class="stat-num">5K+</div>
     <div class="stat-label">Memories Captured</div>
   </div>
-  <div class="stat-item">
+  <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
     <div class="stat-num">32</div>
     <div class="stat-label">Years of Excellence</div>
   </div>
-  <div class="stat-item">
+  <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
     <div class="stat-num">98%</div>
     <div class="stat-label">Client Satisfaction</div>
   </div>
-  <div class="stat-item">
+  <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
     <div class="stat-num">12</div>
     <div class="stat-label">Industry Awards</div>
   </div>
@@ -1137,22 +1151,22 @@
     <h2 class="section-title">Your Experience,<br><em>Crafted Carefully</em></h2>
   </div>
   <div class="process-steps stagger">
-    <div class="process-step">
+    <div class="process-step" data-aos="fade-up" data-aos-delay="0">
       <div class="step-num">01</div>
       <div class="step-title">Consultation</div>
       <div class="step-desc">We begin with a detailed conversation to understand your vision, style preferences, and the story you want told.</div>
     </div>
-    <div class="process-step">
+    <div class="process-step" data-aos="fade-up" data-aos-delay="150">
       <div class="step-num">02</div>
       <div class="step-title">Booking</div>
       <div class="step-desc">Select your package, confirm your date, and secure your session with our simple booking process.</div>
     </div>
-    <div class="process-step">
+    <div class="process-step" data-aos="fade-up" data-aos-delay="300">
       <div class="step-num">03</div>
       <div class="step-title">The Shoot</div>
       <div class="step-desc">Our team arrives fully prepared to capture every emotion, laugh, and quiet intimate moment with artistic precision.</div>
     </div>
-    <div class="process-step">
+    <div class="process-step" data-aos="fade-up" data-aos-delay="450">
       <div class="step-num">04</div>
       <div class="step-title">Delivery</div>
       <div class="step-desc">Meticulously edited images delivered digitally, with optional premium prints, frames, and albums.</div>
@@ -1317,21 +1331,21 @@
       <p>
         Whether you're planning a wedding, celebrating a new arrival, or want to capture a cherished chapter of life — we'd love to hear from you. Reach out and let's begin.
       </p>
-      <div class="contact-detail">
+      <div class="contact-detail" data-aos="fade-up" data-aos-delay="0">
         <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=PZTTDl8ML4vy&format=png&color=000000" style="width: 20px;"></div>
         <div class="contact-detail-text">
           <strong>Studio Address</strong>
           <a>25A, Devodass Street, V.Nagar, Chengalpet — 603001</a>
         </div>
       </div>
-      <div class="contact-detail">
+      <div class="contact-detail" data-aos="fade-up" data-aos-delay="100">
         <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=5wGnhtHODuE9&format=png&color=000000" style="width: 20px;"></div>
         <div class="contact-detail-text">
           <strong>Call or WhatsApp</strong>
           <a href="tel:7418234485">+91 74182 34485</a>
         </div>
       </div>
-      <div class="contact-detail">
+      <div class="contact-detail" data-aos="fade-up" data-aos-delay="200">
         <div class="contact-icon"><img src="https://img.icons8.com/?size=100&id=xLIkjgcmFOsC&format=png&color=000000" style="width: 20px;"></div>
         <div class="contact-detail-text">
           <strong>Email Us</strong>
@@ -1390,7 +1404,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
-    <div>
+    <div data-aos="fade-up" data-aos-delay="0">
       <img src="./logo-1.png" alt="Global Fotos" class="footer-logo-img" style="border-radius: 5px;"/>
       <div class="footer-brand-desc">
         Tamil Nadu's premier photography studio since 1992. Capturing life's most precious moments with artistry, passion, and an unwavering commitment to excellence.
@@ -1401,7 +1415,7 @@
         <a href="https://www.youtube.com/@Sudhakarrajendiran" class="social-link" aria-label="WhatsApp"><img src="https://img.icons8.com/?size=100&id=19318&format=png&color=000000" style="width: 10px;"></a>
       </div>
     </div>
-    <div class="footer-col">
+    <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
       <h4>Quick Links</h4>
       <ul class="footer-links">
         <li><a href="#about">About Us</a></li>
@@ -1411,7 +1425,7 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
     </div>
-    <div class="footer-col">
+    <div class="footer-col" data-aos="fade-up" data-aos-delay="200">
       <h4>Services</h4>
       <ul class="footer-links">
         <li><a href="#services">Wedding Photography</a></li>
@@ -1421,7 +1435,7 @@
         <li><a href="#services">Outdoor Shoot</a></li>
       </ul>
     </div>
-    <div class="footer-col">
+    <div class="footer-col" data-aos="fade-up" data-aos-delay="300">
       <h4>Contact</h4>
       <ul class="footer-links">
         <li><a href="tel:7418234485">+91 74182 34485</a></li>
@@ -1442,6 +1456,7 @@
   <button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">↑</button>
 </div>
 
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Loader
 window.addEventListener('load', () => {
@@ -1594,6 +1609,9 @@ const navObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.35 });
 navSections.forEach(s => navObserver.observe(s));
+
+// AOS init
+AOS.init({ duration: 800, once: true, offset: 60, easing: 'ease-out-cubic' });
 
 // Form submit
 function handleForm(e) {
